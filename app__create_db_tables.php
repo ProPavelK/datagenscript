@@ -1,13 +1,6 @@
 <?php
-// Configuration parameters
-$servername = "sql666.aka.com"; 
-$username = "root";
-$password = "";
-$dbname = "app";
-$tblname1 = "users"; 
-$tblname2 = "books"; 
-$tblname3 = "users_books_mm";
-$tblname4 = "books_pub_offices";
+// Include configuration file
+include 'app__configuration.php';
  
 // Create linkection
 $link = new mysqli($servername, $username, $password, $dbname);
