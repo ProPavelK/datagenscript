@@ -1,54 +1,69 @@
+<!DOCTYPE html>
 <html>
-   <head>
-      <title>Delete MySQL Table</title>
-   </head>
-   
-   <body>
-      <?php
-// Include configuration file
-include 'app__configuration.php';
+<head>
+	 <title>Delete all the fake coronavirus info :)</title>
+	 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+	 <link rel="stylesheet" href="css/app_styles.css">
+</head>
+<body>
 
-// Create linkection
-$link = new mysqli($servername, $username, $password, $dbname);
-// Check linkection
-if ($link->connect_error) {
-  die("Connection failed: " . $link->connect_error) . "<br />";
-}
- 
-// Attempt delete table1 query execution
-$sql1 = "DROP TABLE " . $tblname1;
-if(mysqli_query($link, $sql1)){
-    echo "Table $tblname1 deleted successfully.<br />";
-} else{
-    echo "ERROR: Could not able to execute $sql1. " . mysqli_error($link) . "<br />";
-} 
- 
-// Attempt delete table1 query execution
-$sql2 = "DROP TABLE " . $tblname2;
-if(mysqli_query($link, $sql2)){
-    echo "Table $tblname2 deleted successfully.<br />All done.<br />";
-} else{
-    echo "ERROR: Could not able to execute $sql2. " . mysqli_error($link) . "<br />";
-}  
+<div class="form-style-5">
+<div class="container-5">
+    
+  <p>Fill the info and press the button to delete all the db data</p>
+  <form method="post" name="postForm">
+    <fieldset>    
+    <ul>
+        <li>        
+            <legend><span class="number">1</span> User Info</legend>
+            <label>Name</label>
+            <input type="text" name="name" id="name" placeholder="Donald Duck">
+            <legend><span class="number">2</span> Additional Info</legend>
+            <textarea name="field3" id="place_id" rows="1" cols="35" placeholder="Your Info"></textarea>
+            <span class="throw_error"></span>
+            <span id="success"></span>
+       </li>
+   </ul> 
+   <input type="reset" value="Reset" />
+   <input type="submit" value="Delete everything now" />
+   </fieldset>
+</form>
+</div>
+</div>
 
-// Attempt delete table1 query execution
-$sql3 = "DROP TABLE " . $tblname3;
-if(mysqli_query($link, $sql3)){
-    echo "Table $tblname2 deleted successfully.<br />All done.<br />";
-} else{
-    echo "ERROR: Could not able to execute $sql3. " . mysqli_error($link) . "<br />";
-} 
+</body>
 
-// Attempt delete table1 query execution
-$sql4 = "DROP TABLE " . $tblname4;
-if(mysqli_query($link, $sql4)){
-    echo "Table $tblname4 deleted successfully.<br />All done.<br />";
-} else{
-    echo "ERROR: Could not able to execute $sql4. " . mysqli_error($link) . "<br />";
-}
- 
-// Close linkection
-mysqli_close($link);
-      ?>
-   </body>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('form').submit(function(event) { //Trigger on form submit
+        $('#name + .throw_error').empty(); //Clear the messages first
+        $('#success').empty();
+
+        //Validate fields if required using jQuery
+
+        var postForm = { //Fetch form data
+            'name'     : $('input[name=name]').val(), //Store name fields value
+            'place'    : $("#place_id").val()
+        };
+
+        $.ajax({ //Process the form using $.ajax()
+            type      : 'POST', //Method type
+            url       : 'app__delete_dbtbl_process.php', //Your form processing file URL
+            data      : postForm, //Forms name
+            dataType  : 'json',
+            success   : function(data) {
+                            if (!data.success) { //If fails
+                                if (data.errors.name) { //Returned if any error from app__delete_dbtbl_process.php
+                                    $('.throw_error').fadeIn(1000).html(data.errors.name); //Throw relevant error
+                                }
+                            }
+                            else {
+                                    $('#success').fadeIn(1000).append('<p>' + data.name + '</p>' + '<p>' + data.posted + '</p>' + '<p>' + data.place + ' </p>'); //If successful, than throw a success message
+                                }
+                            }
+        });
+        event.preventDefault(); //Prevent the default submit
+    });
+});
+</script>
 </html>
